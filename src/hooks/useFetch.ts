@@ -1,7 +1,20 @@
 import { useEffect, useState } from "react";
 
+interface Locations {
+  id: number;
+  name: string;
+  country: string;
+  timezone: string;
+  adminArea: string;
+  lon: number;
+  lat: number;
+}
+interface Data {
+  locations: Locations[];
+}
+
 const useFetch = (url: string) => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Data[]>([]);
 
   useEffect(() => {
     if (url !== "") {
@@ -16,7 +29,7 @@ const useFetch = (url: string) => {
         .then((res) => {
           return res.json();
         })
-        .then((data) => setData(data))
+        .then((data: Data[]) => setData(data))
         .catch((err) => {
           console.error(err);
         });

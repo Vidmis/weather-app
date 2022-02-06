@@ -24,15 +24,16 @@ const SearchBar: FC<SearchBarProps> = () => {
   };
 
   const handleSelectCityId = (val: number) => {
-    dispatch(countryId(val))
+    dispatch(countryId(val));
     setInput("");
     setCity("");
     console.log("handle clikc val", val);
   };
 
   useEffect(() => {
-    // cities?.locations.forEach((loc) => console.log(loc));
+    cities?.locations.forEach((loc) => console.log(loc));
     console.log("cities data", cities?.locations);
+    console.log('cityies', cities);
     
   }, [cities]);
 
