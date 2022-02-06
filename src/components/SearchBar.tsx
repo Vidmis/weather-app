@@ -49,6 +49,7 @@ const SearchBar: FC<SearchBarProps> = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <input
+            className='inpt'
             type='text'
             placeholder='Enter City'
             name='city'
@@ -56,7 +57,6 @@ const SearchBar: FC<SearchBarProps> = () => {
             onChange={(e) => setInput(e.target.value)}
             autoComplete='given-name'
           />
-          <button type='submit'>Search</button>
         </div>
       </form>
       <ul>
