@@ -1,49 +1,7 @@
 import { useEffect, useState } from "react";
 
-interface ILocations {
-  id: number;
-  name: string;
-  country: string;
-  timezone: string;
-  adminArea: string;
-  lon: number;
-  lat: number;
-}
-interface ICurrentWeather {
-  time: string;
-  symbol: string;
-  symbolPhrase: string;
-  temperature: number;
-  feelsLikeTemp: number;
-  relHumidity: number;
-  dewPoint: number;
-  windSpeed: number;
-  windDirString: string;
-  windGust: number;
-  precipProb: number;
-  precipRate: number;
-  cloudiness: number;
-  thunderProb: number;
-  uvIndex: number;
-  pressure: number;
-  visibility: number;
-}
-interface IState<T> {
-  data: T;
-}
-
-const useFetch = (
-  url: string
-): {
-  data: IState<ILocations[] | ICurrentWeather[]>;
-} => {
-  let val = {};
-  const [data, setData] = useState<IState<ILocations[] | ICurrentWeather[]>>(
-    val as IState<ILocations[] | ICurrentWeather[]>
-  );
-
-  console.log("fetch data", data);
-  
+const useFetch = <T>(url: string) => {
+  const [data, setData] = useState<T>();
 
   useEffect(() => {
     if (url !== "") {
@@ -55,10 +13,13 @@ const useFetch = (
             "009c2a4f19msh6eb8fa0ec6baf08p1b2e88jsn8f7c887a28ca",
         },
       })
-        .then((res) => {
+        .then<T>((res) => {
           return res.json();
         })
-        .then((data: IState<ILocations[] | ICurrentWeather[]>) => setData(data))
+        .then((data) => {
+          setData(data);
+          console.log("passed url ", url);
+        })
         .catch((err) => {
           console.error(err);
         });

@@ -1,11 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface CountrySlice {
-  value: number | undefined;
+  value: {
+    countryId: number;
+    cityName: string;
+  };
 }
 
 const initialState: CountrySlice = {
-  value: undefined,
+  value: { countryId: 0, cityName: "" },
 };
 
 const countrySlice = createSlice({
@@ -13,10 +16,13 @@ const countrySlice = createSlice({
   initialState,
   reducers: {
     countryId(state, action: PayloadAction<number>) {
-      state.value = action.payload;
+      state.value.countryId = action.payload;
+    },
+    cityName(state, action: PayloadAction<string>) {
+      state.value.cityName = action.payload;
     },
   },
 });
 
-export const { countryId } = countrySlice.actions;
+export const { countryId, cityName } = countrySlice.actions;
 export default countrySlice.reducer;

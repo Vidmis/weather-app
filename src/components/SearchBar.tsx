@@ -1,21 +1,35 @@
 import { FC, FormEventHandler, useEffect, useState } from "react";
 import { useAppDispatch } from "../app/hooks";
-import { countryId } from "../features/country-slice";
+import { countryId, cityName } from "../features/country-slice";
 import useFetch from "../hooks/useFetch";
 
 interface SearchBarProps {}
 
+interface ILocations {
+  id: number;
+  name: string;
+  country: string;
+  timezone: string;
+  adminArea: string;
+  lon: number;
+  lat: number;
+}
+
+interface IState<T> {
+  locations: T;
+}
+
 const SearchBar: FC<SearchBarProps> = () => {
   const [input, setInput] = useState<string>("");
   const [city, setCity] = useState<string>("");
-  const { data: cities } = useFetch(
+  const { data: cities } = useFetch<IState<ILocations[]>>(
     `https://foreca-weather.p.rapidapi.com/location/search/${city}`
   );
   const dispatch = useAppDispatch();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    const letters = /^[A-Za-z]+$/;
+    const letters = /^[a-zA-Z\s]*$/;
     if (input.match(letters) && input.length <= 30) {
       setCity(input);
     } else {
@@ -23,16 +37,12 @@ const SearchBar: FC<SearchBarProps> = () => {
     }
   };
 
-  const handleSelectCityId = (val: number) => {
-    dispatch(countryId(val));
+  const handleSelectCityId = (id: number, city: string) => {
+    dispatch(countryId(id));
+    dispatch(cityName(city));
     setInput("");
     setCity("");
-    console.log("handle clikc val", val);
   };
-
-  useEffect(() => {
-    cities.data?.forEach((loc) => console.log(loc));
-  }, [cities]);
 
   return (
     <>
@@ -50,9 +60,12 @@ const SearchBar: FC<SearchBarProps> = () => {
         </div>
       </form>
       <ul>
-        {cities.data?.map((city) => {
+        {cities?.locations?.slice(0, 5).map((city) => {
           return (
-            <li key={city.id} onClick={() => handleSelectCityId(city.id)}>
+            <li
+              key={city.id}
+              onClick={() => handleSelectCityId(city.id, city.name)}
+            >
               {city.name}
             </li>
           );
