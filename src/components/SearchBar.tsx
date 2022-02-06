@@ -31,10 +31,7 @@ const SearchBar: FC<SearchBarProps> = () => {
   };
 
   useEffect(() => {
-    cities?.locations.forEach((loc) => console.log(loc));
-    console.log("cities data", cities?.locations);
-    console.log('cityies', cities);
-    
+    cities.data?.forEach((loc) => console.log(loc));
   }, [cities]);
 
   return (
@@ -53,13 +50,13 @@ const SearchBar: FC<SearchBarProps> = () => {
         </div>
       </form>
       <ul>
-        {/* {cities?.locations.map((city) => {
+        {cities.data?.map((city) => {
           return (
             <li key={city.id} onClick={() => handleSelectCityId(city.id)}>
               {city.name}
             </li>
           );
-        })} */}
+        })}
       </ul>
     </>
   );

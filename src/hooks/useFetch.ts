@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-interface Locations {
+interface ILocations {
   id: number;
   name: string;
   country: string;
@@ -9,12 +9,41 @@ interface Locations {
   lon: number;
   lat: number;
 }
-interface Data {
-  locations: Locations[];
+interface ICurrentWeather {
+  time: string;
+  symbol: string;
+  symbolPhrase: string;
+  temperature: number;
+  feelsLikeTemp: number;
+  relHumidity: number;
+  dewPoint: number;
+  windSpeed: number;
+  windDirString: string;
+  windGust: number;
+  precipProb: number;
+  precipRate: number;
+  cloudiness: number;
+  thunderProb: number;
+  uvIndex: number;
+  pressure: number;
+  visibility: number;
+}
+interface IState<T> {
+  data: T;
 }
 
-const useFetch = (url: string) => {
-  const [data, setData] = useState<Data[]>([]);
+const useFetch = (
+  url: string
+): {
+  data: IState<ILocations[] | ICurrentWeather[]>;
+} => {
+  let val = {};
+  const [data, setData] = useState<IState<ILocations[] | ICurrentWeather[]>>(
+    val as IState<ILocations[] | ICurrentWeather[]>
+  );
+
+  console.log("fetch data", data);
+  
 
   useEffect(() => {
     if (url !== "") {
@@ -29,7 +58,7 @@ const useFetch = (url: string) => {
         .then((res) => {
           return res.json();
         })
-        .then((data: Data[]) => setData(data))
+        .then((data: IState<ILocations[] | ICurrentWeather[]>) => setData(data))
         .catch((err) => {
           console.error(err);
         });
