@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-const useFetch = (url: string) => {
-  const [data, setData] = useState<any[]>([]);
+const useFetch = <T>(url: string) => {
+  const [data, setData] = useState<T>();
 
   useEffect(() => {
     if (url !== "") {
@@ -13,10 +13,13 @@ const useFetch = (url: string) => {
             "009c2a4f19msh6eb8fa0ec6baf08p1b2e88jsn8f7c887a28ca",
         },
       })
-        .then((res) => {
+        .then<T>((res) => {
           return res.json();
         })
-        .then((data) => setData(data))
+        .then((data) => {
+          setData(data);
+          console.log("passed url ", url);
+        })
         .catch((err) => {
           console.error(err);
         });
