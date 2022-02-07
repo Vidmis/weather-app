@@ -1,9 +1,12 @@
-import { FC, FormEventHandler, useEffect, useState } from "react";
+import { FC, FormEventHandler, useState } from "react";
 import { useAppDispatch } from "../app/hooks";
 import { countryId, cityName } from "../features/country-slice";
 import useFetch from "../hooks/useFetch";
 
 interface SearchBarProps {}
+interface IError {
+  error: boolean;
+}
 
 interface ILocations {
   id: number;
@@ -19,9 +22,21 @@ interface IState<T> {
   locations: T;
 }
 
+export const ShowError: FC<IError> = (props) => {
+  if (props.error) {
+    return (
+      <p className='text-red-300 text-center bg-gray-700 rounded-md py-2'>
+        Input should consist letters only
+      </p>
+    );
+  }
+  return null;
+};
+
 const SearchBar: FC<SearchBarProps> = () => {
   const [input, setInput] = useState<string>("");
   const [city, setCity] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
   const { data: cities } = useFetch<IState<ILocations[]>>(
     `https://foreca-weather.p.rapidapi.com/location/search/${city}`
   );
@@ -30,10 +45,12 @@ const SearchBar: FC<SearchBarProps> = () => {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const letters = /^[a-zA-Z\s]*$/;
-    if (input.match(letters) && input.length <= 30) {
+    if (input.match(letters)) {
       setCity(input);
+      setError(false);
     } else {
-      console.log("Input should be letters only and up to 30 symbols");
+      setCity("");
+      setError(true);
     }
   };
 
@@ -46,31 +63,51 @@ const SearchBar: FC<SearchBarProps> = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form autoComplete='off' className='' onSubmit={handleSubmit}>
+        <div className='bg-white h-10 w-72 relative rounded-md'>
           <input
-            className='inpt'
+            autoComplete='off'
+            className='inpt '
             type='text'
             placeholder='Enter City'
-            name='city'
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            autoComplete='given-name'
+            maxLength={30}
           />
+          <button type='submit' className='absolute p-1 mx-2 right-1'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='w-6 h-6 my-1 text-gray-500'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'
+            >
+              <path
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                stroke-width='2'
+                d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+              />
+            </svg>
+          </button>
+
+          <ShowError error={error} />
+
+          <ul className='bg-neutral-600 rounded-md absolute overflow-auto w-72'>
+            {cities?.locations?.slice(0, 5).map((city) => {
+              return (
+                <li
+                  className='hover:bg-neutral-700 bg-opacity-10 px-3 py-1'
+                  key={city.id}
+                  onClick={() => handleSelectCityId(city.id, city.name)}
+                >
+                  {city.name}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </form>
-      <ul>
-        {cities?.locations?.slice(0, 5).map((city) => {
-          return (
-            <li
-              key={city.id}
-              onClick={() => handleSelectCityId(city.id, city.name)}
-            >
-              {city.name}
-            </li>
-          );
-        })}
-      </ul>
     </>
   );
 };

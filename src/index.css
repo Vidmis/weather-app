@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .inpt {
-  @apply transition duration-300 ease-in-out font-medium focus:shadow-md ring-1 ring-gray-400 focus:ring-2 focus:ring-yellow-300 text-gray-400 rounded-md w-40 text-center py-1 my-2 focus:outline-none focus:text-gray-600;
+  @apply transition duration-300 ease-in-out font-medium text-gray-400 text-left ml-2 p-2 focus:outline-none focus:text-gray-600;
 }

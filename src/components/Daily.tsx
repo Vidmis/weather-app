@@ -7,19 +7,40 @@ interface DailyProps {
 
 interface IForecast {
   forecast: {
-    date: string;
-    maxTemp: number;
-    maxWindSpeed: number;
-    minTemp: number;
-    precipAccum: number;
     symbol: string;
+    date: string;
+    symbolPhrase: string;
+    maxTemp: number;
+    minTemp: number;
+    maxFeelsLikeTemp: number;
+    minFeelsLikeTemp: number;
+    maxRelHumidity: number;
+    minRelHumidity: number;
+    maxDewPoint: number;
+    minDewPoint: number;
+    precipAccum: number;
+    snowAccum: number;
+    maxWindSpeed: number;
     windDir: number;
+    maxWindGust: number;
+    precipProb: number;
+    cloudiness: number;
+    sunrise: string;
+    sunset: string;
+    sunriseEpoch: number;
+    sunsetEpoch: number;
+    moonrise: string;
+    moonset?: any;
+    moonPhase: number;
+    uvIndex: number;
+    minVisibility: number;
+    pressure: number;
   }[];
 }
 
 const Daily: FC<DailyProps> = ({ countryId }) => {
   const { data: daily } = useFetch<IForecast>(
-    `https://foreca-weather.p.rapidapi.com/forecast/daily/${countryId}?tempunit=C`
+    `https://foreca-weather.p.rapidapi.com/forecast/daily/${countryId}?alt=0&tempunit=C&windunit=MS&dataset=full`
   );
 
   const getDayOfWeek = (date: string | number) => {
@@ -27,33 +48,46 @@ const Daily: FC<DailyProps> = ({ countryId }) => {
     return isNaN(dayOfWeek)
       ? null
       : [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
+          "Sun",
+          "Mon",
+          "Tue",
+          "Wed",
+          "Thu",
+          "Fri",
+          "Sat",
         ][dayOfWeek];
   };
 
   return (
-    <div className='mx-10'>
-      <ul className='flex overflow-x-scroll'>
-        {daily?.forecast?.map((cast) => {
-          return (
-            <li className='flex-shrink-0'>
-              <div className='w'>
-                <p>{getDayOfWeek(cast.date)}</p>
-                <p className='text-3xl font-bold underline'>
-                  {cast.maxTemp}&#176; {cast.minTemp}&#176; C
-                </p>
-                <img src={`/src/img/icons/${cast.symbol}.png`} alt='symbol' />
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+    <div className='sm:max-w-lg w-72 sm:w-fit relative rounded-lg overflow-auto bg-white shadow-2xl shadow-gray-900 text-white'>
+      <div className='mx-auto  min-w-0 dark:bg-slate-700 '>
+        <ul className='overflow-x-scroll flex'>
+          {daily?.forecast?.map((cast) => {
+            return (
+              <li className='flex-none py-6 px-3 first:pl-6 last:pr-6'>
+                <div className='flex flex-col items-center justify-center gap-6'>
+                  <p className='text-base'>{getDayOfWeek(cast.date)}</p>
+                  <div className="flex flex-col gap-1">
+                    <p className='text-sm'>
+                      {cast.maxTemp}&#176;{" "}
+                      <span className='opacity-60'>{cast.minTemp}&#176;</span>
+                    </p>
+                    <img
+                      className='w-12 h-12'
+                      src={`/src/img/icons/${cast.symbol}.png`}
+                      alt='symbol'
+                    />
+                    <p className='text-sm'>
+                      {cast.maxWindSpeed}{" "}
+                      <span className='text-sm opacity-60'>m/s</span>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 };
