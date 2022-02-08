@@ -1,6 +1,6 @@
-import { FC } from "react";
 import { useAppSelector } from "../app/hooks";
 import useFetch from "../hooks/useFetch";
+import Daily from "./Daily";
 
 interface ICurrentWeather {
   current: {
@@ -24,84 +24,55 @@ interface ICurrentWeather {
   };
 }
 
-interface IForecast {
-  forecast: {
-    date: string;
-    maxTemp: number;
-    maxWindSpeed: number;
-    minTemp: number;
-    precipAccum: number;
-    symbol: string;
-    windDir: number;
-  }[];
-}
-
 const Content = () => {
   const { countryId } = useAppSelector((state) => state.country.value);
   const { cityName } = useAppSelector((state) => state.country.value);
   const { data: selectedCity } = useFetch<ICurrentWeather>(
     `https://foreca-weather.p.rapidapi.com/current/${countryId}?tempunit=C`
   );
-  const { data: daily } = useFetch<IForecast>(
-    `https://foreca-weather.p.rapidapi.com/forecast/daily/${countryId}?tempunit=C`
-  );
 
-  daily?.forecast?.map((cast) => console.log(cast.date));
+  const cityForConsole = selectedCity?.current;
 
-  const getDayOfWeek = (date: string | number) => {
-    const dayOfWeek = new Date(date).getDay();
-    return isNaN(dayOfWeek)
-      ? null
-      : [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ][dayOfWeek];
-  };
-
-  console.log(getDayOfWeek("2022-02-17"), getDayOfWeek(Date.now()));
+  console.log("Current weather conditions: ", {
+    "Temperature": cityForConsole?.temperature,
+    "Wind speed": cityForConsole?.windSpeed,
+    "Precipitation": cityForConsole?.precipProb,
+    "Humidity": cityForConsole?.relHumidity,
+  });
 
   return (
-    <>
+    <div className='rounded-md relative min-w-0'>
       {cityName && (
-        <div>
-          <h2>{cityName}</h2>
-          <p>
-            <span>Current {selectedCity?.current?.temperature}&#176;C </span>
-            <img
-              src={`/src/img/icons/${selectedCity?.current?.symbol}.png`}
-              alt='symbol'
-            />
-          </p>
-
+        <div className='flex flex-col justify-items-center items-center'>
+          <h2 className='mb-4 text-2xl font-bold sm:text-4xl text-center'>
+            {cityName}
+          </h2>
+          <div className='mb-6 sm:mb-20 flex flex-row items-center w-76 sm:w-96 justify-around'>
+            {selectedCity && (
+              <img
+                className='w-12 sm:w-16 mx-1'
+                src={`/src/img/icons/${selectedCity?.current?.symbol}.png`}
+                alt='symbol'
+              />
+            )}
+            <div className='flex flex-row'>
+              <h5 className='font-bold text-6xl'>
+                {selectedCity?.current?.temperature}
+              </h5>
+              <span className='text-2xl font-bold'>&#176;C</span>
+              <h5 className='flex flex-col justify-center w-34 sm:w-36 text-xs sm:text-sm ml-2 pl-2 border-l-2'>
+                <span>Precipitation: {selectedCity?.current?.precipProb}%</span>
+                <span>Humidity: {selectedCity?.current?.relHumidity}%</span>
+                <span>Wind: {selectedCity?.current?.windSpeed}m/s</span>
+              </h5>
+            </div>
+          </div>
           <div>
-            {" "}
-            <ul>
-              {daily?.forecast?.map((cast) => {
-                return (
-                  <li>
-                    <div>
-                      <p>{getDayOfWeek(cast.date)}</p>
-                      <p>
-                        {cast.maxTemp}&#176; {cast.minTemp}&#176; C
-                      </p>
-                      <img
-                        src={`/src/img/icons/${cast.symbol}.png`}
-                        alt='symbol'
-                      />
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+            <Daily countryId={countryId} />
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
