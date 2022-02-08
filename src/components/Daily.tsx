@@ -47,47 +47,42 @@ const Daily: FC<DailyProps> = ({ countryId }) => {
     const dayOfWeek = new Date(date).getDay();
     return isNaN(dayOfWeek)
       ? null
-      : [
-          "Sun",
-          "Mon",
-          "Tue",
-          "Wed",
-          "Thu",
-          "Fri",
-          "Sat",
-        ][dayOfWeek];
+      : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayOfWeek];
   };
 
   return (
-    <div className='sm:max-w-lg w-72 sm:w-fit relative rounded-lg overflow-auto bg-white shadow-2xl shadow-gray-900 text-white'>
-      <div className='mx-auto  min-w-0 dark:bg-slate-700 '>
-        <ul className='overflow-x-scroll flex'>
-          {daily?.forecast?.map((cast) => {
-            return (
-              <li className='flex-none py-6 px-3 first:pl-6 last:pr-6'>
-                <div className='flex flex-col items-center justify-center gap-6'>
-                  <p className='text-base'>{getDayOfWeek(cast.date)}</p>
-                  <div className="flex flex-col gap-1">
-                    <p className='text-sm'>
-                      {cast.maxTemp}&#176;{" "}
-                      <span className='opacity-60'>{cast.minTemp}&#176;</span>
-                    </p>
-                    <img
-                      className='w-12 h-12'
-                      src={`/src/img/icons/${cast.symbol}.png`}
-                      alt='symbol'
-                    />
-                    <p className='text-sm'>
-                      {cast.maxWindSpeed}{" "}
-                      <span className='text-sm opacity-60'>m/s</span>
-                    </p>
-                  </div>
+    <div className='sm:max-w-xl w-72 sm:w-fit rounded-lg overflow-auto bg-slate-800 bg-opacity-80 text-white shadow-2xl'>
+      {/* <div className='mx-auto  min-w-0 dark:bg-slate-700'> */}
+      <ul className='overflow-x-scroll flex'>
+        {daily?.forecast?.map((cast, index) => {
+          return (
+            <li
+              key={index}
+              className='flex-none py-6 px-3 first:pl-6 last:pr-6'
+            >
+              <div className='flex flex-col items-center justify-center gap-6'>
+                <p className='text-base'>{getDayOfWeek(cast.date)}</p>
+                <div className='flex flex-col gap-1 items-center'>
+                  <p className='text-sm'>
+                    {cast.maxTemp}&#176;{" "}
+                    <span className='opacity-60'>{cast.minTemp}&#176;</span>
+                  </p>
+                  <img
+                    className='w-12 h-12'
+                    src={`/src/img/icons/${cast.symbol}.png`}
+                    alt='symbol'
+                  />
+                  <p className='text-sm'>
+                    {cast.maxWindSpeed}{" "}
+                    <span className='text-sm opacity-60'>m/s</span>
+                  </p>
                 </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      {/* </div> */}
     </div>
   );
 };

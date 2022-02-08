@@ -5,15 +5,29 @@ import SearchBar from "./SearchBar";
 interface WrapperProps {}
 
 const Wrapper: FC<WrapperProps> = () => {
+  const hours = new Date().getHours();
+  const isDayTime = hours > 6 && hours < 19;
+
   return (
     <>
-      <div className='main_content h-screen grid grid-rows-8 w-full items-center justify-items-center'>
-        <h1 className='h-10 row-span-1 text-3xl font-bold mt-7'>Weather App</h1>
-        <div className='search_bar row-span-1'>
-          <SearchBar />
-        </div>
-        <div className='content row-span-6'>
-          <Content />
+      <div className='h-screen p-4 flex items-center justify-center relative overflow-hidden'>
+        <div
+          className={`flex-1 p-4 rounded-lg bg-day-image shadow-xl max-w-md bg-zinc-700 sm:h-fits ${
+            isDayTime
+              ? "bg-gradient-to-b from-sky-500 to-green-500"
+              : "bg-gradient-to-b from-violet-800 to-sky-700 "
+          }`}
+        >
+          <div className='aspect-w-3 aspect-h-4'>
+            <div className='flex flex-col items-center justify-items-center'>
+              <div className='search_bar mt-1 sm:mt-5'>
+                <SearchBar />
+              </div>
+              <div className='content absolute bottom-3'>
+                <Content />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

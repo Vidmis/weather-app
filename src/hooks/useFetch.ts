@@ -18,7 +18,6 @@ const useFetch = <T>(url: string) => {
         })
         .then((data) => {
           setData(data);
-          console.log("passed url ", url);
         })
         .catch((err) => {
           console.error(err);

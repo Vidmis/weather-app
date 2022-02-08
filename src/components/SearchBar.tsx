@@ -42,6 +42,14 @@ const SearchBar: FC<SearchBarProps> = () => {
   );
   const dispatch = useAppDispatch();
 
+  const cityObj = sessionStorage.getItem("cityObj");
+
+  if (cityObj) {
+    const defaultCity = JSON.parse(cityObj);
+    dispatch(cityName(defaultCity.city));
+    dispatch(countryId(parseInt(defaultCity.id)));
+  }
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const letters = /^[a-zA-Z\s]*$/;
@@ -57,6 +65,10 @@ const SearchBar: FC<SearchBarProps> = () => {
   const handleSelectCityId = (id: number, city: string) => {
     dispatch(countryId(id));
     dispatch(cityName(city));
+    sessionStorage.setItem("cityObj", JSON.stringify({ id, city }));
+
+    console.log("City entered: ", city);
+
     setInput("");
     setCity("");
   };
@@ -67,7 +79,7 @@ const SearchBar: FC<SearchBarProps> = () => {
         <div className='bg-white h-10 w-72 relative rounded-md'>
           <input
             autoComplete='off'
-            className='inpt '
+            className='inpt'
             type='text'
             placeholder='Enter City'
             value={input}
@@ -83,9 +95,9 @@ const SearchBar: FC<SearchBarProps> = () => {
               stroke='currentColor'
             >
               <path
-                stroke-linecap='round'
-                stroke-linejoin='round'
-                stroke-width='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
                 d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
               />
             </svg>
@@ -93,7 +105,7 @@ const SearchBar: FC<SearchBarProps> = () => {
 
           <ShowError error={error} />
 
-          <ul className='bg-neutral-600 rounded-md absolute overflow-auto w-72'>
+          <ul className='bg-neutral-600 rounded-md absolute overflow-auto w-72 z-10'>
             {cities?.locations?.slice(0, 5).map((city) => {
               return (
                 <li
