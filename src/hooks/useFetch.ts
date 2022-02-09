@@ -4,7 +4,7 @@ const useFetch = <T>(url: string) => {
   const [data, setData] = useState<T>();
 
   useEffect(() => {
-    if (url !== "") {
+    if (url) {
       fetch(url, {
         method: "GET",
         headers: {
