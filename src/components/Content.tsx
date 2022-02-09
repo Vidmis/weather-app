@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAppSelector } from "../app/hooks";
 import useFetch from "../hooks/useFetch";
 import Daily from "./Daily";
@@ -33,12 +34,14 @@ const Content = () => {
 
   const cityForConsole = selectedCity?.current;
 
-  console.log("Current weather conditions: ", {
-    "Temperature": cityForConsole?.temperature,
-    "Wind speed": cityForConsole?.windSpeed,
-    "Precipitation": cityForConsole?.precipProb,
-    "Humidity": cityForConsole?.relHumidity,
-  });
+  useEffect(() => {
+    console.log("Current weather conditions: ", {
+      Temperature: cityForConsole?.temperature,
+      "Wind speed": cityForConsole?.windSpeed,
+      Precipitation: cityForConsole?.precipProb,
+      Humidity: cityForConsole?.relHumidity,
+    });
+  }, [cityForConsole]);
 
   return (
     <div className='rounded-md relative min-w-0'>
@@ -51,7 +54,7 @@ const Content = () => {
             {selectedCity && (
               <img
                 className='w-12 sm:w-16 mx-1'
-                src={`/src/img/icons/${selectedCity?.current?.symbol}.png`}
+                src={`img/icons/${selectedCity?.current?.symbol}.png`}
                 alt='symbol'
               />
             )}
